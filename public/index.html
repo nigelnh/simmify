@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simmify</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    /* Collapse container */
+    #previousLinksContainer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-in-out;
+    }
+
+    /* Expanded state for the container */
+    #previousLinksContainer.expanded {
+      max-height: 300px; /* Set max height for scrolling */
+      overflow-y: auto;  /* Enable vertical scrolling when content exceeds height */
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+  <h1 class="pt-10 text-4xl font-bold mb-6">Simmify</h1>  
+  <div class="mb-6">
+    <input type="text" id="urlInput" placeholder="Enter URL" class="border border-gray-300 p-2 rounded-md mr-2">
+    <button onclick="summarize()" class="bg-blue-500 text-white p-2 rounded-md">Summarize</button>
+  </div>
+  <div id="summaryContainer" class="mb-6 w-full max-w-2xl p-4 bg-white border border-gray-300 rounded-md shadow-md"></div>
+
+  <!-- Collapsible and Scrollable Previous Links Section -->
+  <h2 id="previousLinksTitle" class="text-2xl font-semibold mb-4 cursor-pointer">Previous Links</h2>
+  <div id="previousLinksContainer" class="list-disc pl-5">
+    <ul id="previousLinks"></ul>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
