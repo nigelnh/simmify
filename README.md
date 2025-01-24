@@ -17,7 +17,7 @@ This project combines the power of AI summarization with a nostalgic pixel art a
 - 🌐 Works with any web article
 
 ## 🚀 Live Demo
-[View Live Demo](https://nigelnh.github.io/Summify/)
+[View Live Demo](https://nigelnh.github.io/simmify/)
 
 ## 💻 Technologies Used
 - Frontend:
