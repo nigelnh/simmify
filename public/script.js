@@ -1,54 +1,58 @@
-document.addEventListener('DOMContentLoaded', () => {
-  loadPreviousLinks();
+document.addEventListener("DOMContentLoaded", () => {
+  // Dark mode toggle
+  const darkModeToggle = document.getElementById("darkModeToggle");
 
-  // Add click event listener for toggling the previous links container
-  const previousLinksTitle = document.getElementById('previousLinksTitle');
-  const previousLinksContainer = document.getElementById('previousLinksContainer');
+  // Check for saved dark mode preference
+  if (localStorage.getItem("darkMode") === "enabled") {
+    document.documentElement.classList.add("dark");
+    document.body.classList.add("dark");
+    darkModeToggle.checked = true;
+  }
 
-  previousLinksTitle.addEventListener('click', () => {
-    previousLinksContainer.classList.toggle('expanded');
+  darkModeToggle.addEventListener("change", () => {
+    if (darkModeToggle.checked) {
+      document.documentElement.classList.add("dark");
+      document.body.classList.add("dark");
+      localStorage.setItem("darkMode", "enabled");
+    } else {
+      document.documentElement.classList.remove("dark");
+      document.body.classList.remove("dark");
+      localStorage.setItem("darkMode", "disabled");
+    }
   });
 });
 
 async function summarize() {
-  const urlInput = document.getElementById('urlInput').value;
-
-  const response = await fetch('http://localhost:3000/api/summarize', {
-    method: 'POST',
+  const urlInput = document.getElementById("urlInput").value;
+  const response = await fetch("http://localhost:3000/api/summarize", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({ url: urlInput }),
   });
 
   const data = await response.json();
-  const summaryContainer = document.getElementById('summaryContainer');
+  const summaryContainer = document.getElementById("summaryContainer");
 
   if (data.error) {
     summaryContainer.innerHTML = `<h2>Error</h2><p>${data.error}</p>`;
   } else {
-    summaryContainer.innerHTML = `<h2>Summary</h2>`;
+    summaryContainer.innerHTML = `<h2 class="text-xl font-bold mb-4 pixel-font">Summary</h2>`;
     const formattedSummary = formatSummary(data.summary);
     summaryContainer.appendChild(formattedSummary);
   }
-
-  loadPreviousLinks();
 }
 
 function formatSummary(summary) {
-  const lines = summary.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-  const ul = document.createElement('ul');
-  lines.forEach(line => {
-    const li = document.createElement('li');
-    li.textContent = line;
-    ul.appendChild(li);
-  });
-  return ul;
-}
+  const container = document.createElement("div");
+  container.className = "space-y-4";
 
-async function loadPreviousLinks() {
-  const response = await fetch('http://localhost:3000/api/links');
-  const links = await response.json();
-  const previousLinks = document.getElementById('previousLinks');
-  previousLinks.innerHTML = links.map(link => `<li>${link.url}</li>`).join('');
+  const summaryText = document.createElement("p");
+  summaryText.className = "text-lg leading-relaxed pixel-font";
+  summaryText.style.fontSize = "14px";
+  summaryText.textContent = summary;
+  container.appendChild(summaryText);
+
+  return container;
 }

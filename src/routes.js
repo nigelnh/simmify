@@ -1,9 +1,8 @@
-const express = require('express');
-const { summarizeContent, getPreviousLinks } = require('./controllers');
+const express = require("express");
+const { summarizeContent } = require("./controllers");
 
 const router = express.Router();
 
-router.post('/summarize', summarizeContent);
-router.get('/links', getPreviousLinks);
+router.post("/summarize", summarizeContent);
 
 module.exports = router;

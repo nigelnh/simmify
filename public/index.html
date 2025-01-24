@@ -1,38 +1,111 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simmify</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
-    /* Collapse container */
-    #previousLinksContainer {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease-in-out;
+    /* Pixel theme font */
+    .pixel-font {
+      font-family: 'Press Start 2P', cursive;
     }
 
-    /* Expanded state for the container */
-    #previousLinksContainer.expanded {
-      max-height: 300px; /* Set max height for scrolling */
-      overflow-y: auto;  /* Enable vertical scrolling when content exceeds height */
+    /* Dark mode styles */
+    .dark {
+      background-color: #1a1a1a;
+      color: #ffffff;
+    }
+
+    .dark body {
+      background-color: #1a1a1a !important;
+    }
+
+    .dark #summaryContainer {
+      background-color: #2d2d2d;
+      border-color: #404040;
+    }
+
+    /* Override Tailwind's bg-gray-100 on body */
+    body.dark {
+      background-color: #1a1a1a !important;
+    }
+
+    /* Toggle switch styles */
+    .toggle-switch {
+      width: 60px;
+      height: 30px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "🌞";
+      height: 22px;
+      width: 22px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(30px);
+      content: "🌙";
+    }
+
+    /* Add these input dark mode styles */
+    .dark input[type="text"] {
+      background-color: #2d2d2d;
+      color: #ffffff;
+      border-color: #404040;
     }
   </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-  <h1 class="pt-10 text-4xl font-bold mb-6">Simmify</h1>  
+<body class="flex flex-col items-center justify-center min-h-screen transition-colors duration-300">
+  <!-- Dark mode toggle -->
+  <div class="absolute top-4 right-4">
+    <label class="toggle-switch">
+      <input type="checkbox" id="darkModeToggle">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <h1 class="pt-10 text-4xl font-bold mb-6 pixel-font">Simmify</h1>  
   <div class="mb-6">
-    <input type="text" id="urlInput" placeholder="Enter URL" class="border border-gray-300 p-2 rounded-md mr-2">
-    <button onclick="summarize()" class="bg-blue-500 text-white p-2 rounded-md">Summarize</button>
+    <input type="text" id="urlInput" placeholder="Enter URL" class="border border-gray-300 p-2 rounded-md mr-2 pixel-font text-sm transition-colors duration-300">
+    <button onclick="summarize()" class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-md pixel-font text-sm">Summarize</button>
   </div>
   <div id="summaryContainer" class="mb-6 w-full max-w-2xl p-4 bg-white border border-gray-300 rounded-md shadow-md"></div>
-
-  <!-- Collapsible and Scrollable Previous Links Section -->
-  <h2 id="previousLinksTitle" class="text-2xl font-semibold mb-4 cursor-pointer">Previous Links</h2>
-  <div id="previousLinksContainer" class="list-disc pl-5">
-    <ul id="previousLinks"></ul>
-  </div>
 
   <script src="script.js"></script>
 </body>
