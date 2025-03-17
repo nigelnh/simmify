@@ -1,10 +1,10 @@
-# 🎮 Simmify - URLs Summarizer
+# Simmify - URLs Summarizer
 
 A web application that transforms lengthy articles into summaries, for students who want to optimize their reading workflow.
 
 ![Simmify App](./assets/app-screenshot.png)
 
-## 🎯 About
+## About
 
 This project combines the power of AI summarization with a nostalgic pixel art aesthetic. Created out of necessity during my article research, Simmify aims to make literature review more efficient while bringing a touch of retro gaming charm to scholarly work.
 
