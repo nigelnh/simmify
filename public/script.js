@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function summarize() {
   const urlInput = document.getElementById("urlInput").value;
-  const response = await fetch("http://localhost:3000/api/summarize", {
+  const response = await fetch("http://localhost:3001/api/summarize", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
