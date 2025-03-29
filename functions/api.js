@@ -92,12 +92,15 @@ exports.handler = async (event, context) => {
     // More specific error messages
     if (error.response) {
       // API error response
+      const errorMessage =
+        error.response.data.error?.message ||
+        error.response.data.error ||
+        JSON.stringify(error.response.data);
+
       return {
         statusCode: error.response.status,
         body: JSON.stringify({
-          error: `API Error: ${
-            error.response.data.error || "Unknown API error"
-          }`,
+          error: `API Error: ${errorMessage}`,
         }),
       };
     } else if (error.request) {
@@ -115,6 +118,7 @@ exports.handler = async (event, context) => {
       statusCode: 500,
       body: JSON.stringify({
         error:
+          error.message ||
           "Failed to summarize content. Please check the URL and try again.",
       }),
     };
