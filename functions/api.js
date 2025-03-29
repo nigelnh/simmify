@@ -6,6 +6,9 @@ const OPENROUTER_API_KEY =
   "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";
 
 exports.handler = async (event, context) => {
+  console.log("Function started");
+  console.log("Event:", JSON.stringify(event, null, 2));
+
   // Only allow POST
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
@@ -13,6 +16,7 @@ exports.handler = async (event, context) => {
 
   try {
     const { url } = JSON.parse(event.body);
+    console.log("URL received:", url);
 
     // Basic URL validation
     if (!url) {
@@ -23,8 +27,10 @@ exports.handler = async (event, context) => {
     }
 
     // First, fetch the content from the URL
+    console.log("Fetching content from URL...");
     const webContent = await axios.get(url);
     const html = webContent.data;
+    console.log("Content fetched successfully");
 
     // Extract text content from HTML using cheerio
     const $ = cheerio.load(html);
@@ -39,6 +45,7 @@ exports.handler = async (event, context) => {
       .replace(/\s+/g, " ") // Replace multiple spaces with single space
       .trim(); // Remove leading/trailing whitespace
 
+    console.log("Preparing to send to OpenRouter API...");
     // Then, send to OpenRouter API for summarization
     const response = await axios.post(
       OPENROUTER_API_URL,
@@ -63,14 +70,17 @@ exports.handler = async (event, context) => {
       }
     );
 
+    console.log("OpenRouter API response received");
     // Better error handling for the API response
     if (!response.data || !response.data.choices || !response.data.choices[0]) {
+      console.error("Invalid API response:", response.data);
       throw new Error("Invalid response from API");
     }
 
     const summary = response.data.choices[0].message.content;
 
     if (!summary) {
+      console.error("No summary in API response");
       throw new Error("No summary generated");
     }
 
@@ -82,12 +92,18 @@ exports.handler = async (event, context) => {
       .replace(/\s*-\s*/g, "\n- ") // Ensure each bullet point starts on a new line
       .trim();
 
+    console.log("Function completed successfully");
     return {
       statusCode: 200,
       body: JSON.stringify({ summary: cleanSummary }),
     };
   } catch (error) {
     console.error("Error in summarizeContent:", error);
+    console.error("Error details:", {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status,
+    });
 
     // More specific error messages
     if (error.response) {
