@@ -1,8 +1,9 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
-require("dotenv").config();
 
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
+const OPENROUTER_API_KEY =
+  "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";
 
 exports.handler = async (event, context) => {
   // Only allow POST
@@ -12,18 +13,6 @@ exports.handler = async (event, context) => {
 
   try {
     const { url } = JSON.parse(event.body);
-    const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-
-    // Check if API key exists
-    if (!OPENROUTER_API_KEY) {
-      return {
-        statusCode: 500,
-        body: JSON.stringify({
-          error:
-            "API key not configured. Please check your environment variables.",
-        }),
-      };
-    }
 
     // Basic URL validation
     if (!url) {
@@ -68,7 +57,7 @@ exports.handler = async (event, context) => {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-          "HTTP-Referer": process.env.URL || "http://localhost:3001",
+          "HTTP-Referer": "https://simmify.netlify.app",
           "X-Title": "Simmify",
         },
       }
