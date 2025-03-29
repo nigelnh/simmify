@@ -64,7 +64,7 @@ exports.handler = async (event, context) => {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-          "HTTP-Referer": "https://simmify.netlify.app",
+          "HTTP-Referer": "https://urlssummarizer.netlify.app",
           "X-Title": "Simmify",
         },
       }
