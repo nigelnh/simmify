@@ -5,15 +5,23 @@ require("dotenv").config();
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
-exports.summarizeContent = async (req, res) => {
-  const { url } = req.body;
-
-  // Basic URL validation
-  if (!url) {
-    return res.status(400).json({ error: "URL is required" });
+exports.handler = async (event, context) => {
+  // Only allow POST
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405, body: "Method Not Allowed" };
   }
 
   try {
+    const { url } = JSON.parse(event.body);
+
+    // Basic URL validation
+    if (!url) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "URL is required" }),
+      };
+    }
+
     // First, fetch the content from the URL
     const webContent = await axios.get(url);
     const html = webContent.data;
@@ -49,8 +57,8 @@ exports.summarizeContent = async (req, res) => {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-          "HTTP-Referer": "http://localhost:3001", // Required for OpenRouter
-          "X-Title": "Simmify", // Optional, but good practice
+          "HTTP-Referer": process.env.URL || "http://localhost:3001",
+          "X-Title": "Simmify",
         },
       }
     );
@@ -74,27 +82,41 @@ exports.summarizeContent = async (req, res) => {
       .replace(/\s*-\s*/g, "\n- ") // Ensure each bullet point starts on a new line
       .trim();
 
-    // Return the summary to the client
-    res.json({ summary: cleanSummary });
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ summary: cleanSummary }),
+    };
   } catch (error) {
     console.error("Error in summarizeContent:", error);
 
     // More specific error messages
     if (error.response) {
       // API error response
-      return res.status(error.response.status).json({
-        error: `API Error: ${error.response.data.error || "Unknown API error"}`,
-      });
+      return {
+        statusCode: error.response.status,
+        body: JSON.stringify({
+          error: `API Error: ${
+            error.response.data.error || "Unknown API error"
+          }`,
+        }),
+      };
     } else if (error.request) {
       // Network error
-      return res.status(500).json({
-        error: "Network error - Could not reach the API",
-      });
+      return {
+        statusCode: 500,
+        body: JSON.stringify({
+          error: "Network error - Could not reach the API",
+        }),
+      };
     }
 
     // Generic error
-    res.status(500).json({
-      error: "Failed to summarize content. Please check the URL and try again.",
-    });
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        error:
+          "Failed to summarize content. Please check the URL and try again.",
+      }),
+    };
   }
 };
