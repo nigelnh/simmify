@@ -3,7 +3,6 @@ const cheerio = require("cheerio");
 require("dotenv").config();
 
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
 exports.handler = async (event, context) => {
   // Only allow POST
@@ -13,6 +12,18 @@ exports.handler = async (event, context) => {
 
   try {
     const { url } = JSON.parse(event.body);
+    const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+
+    // Check if API key exists
+    if (!OPENROUTER_API_KEY) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({
+          error:
+            "API key not configured. Please check your environment variables.",
+        }),
+      };
+    }
 
     // Basic URL validation
     if (!url) {
